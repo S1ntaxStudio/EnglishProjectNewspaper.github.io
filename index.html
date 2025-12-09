@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GLOBAL MEDIA REPORT — Front Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Tailwind customization for newspaper feel
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              serif: ['"Times New Roman"', "Georgia", "serif"],
+              headline: ['"Playfair Display"', '"Times New Roman"', "serif"],
+            },
+            letterSpacing: {
+              wideish: "0.18em",
+            },
+            keyframes: {
+              fadein: { "0%": { opacity: "0" }, "100%": { opacity: "1" } },
+            },
+            animation: {
+              fade: "fadein 0.8s ease-out both",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      /* Paper grain without images */
+      body {
+        background: #f7f7f5;
+        background-image:
+          linear-gradient(0deg, rgba(0, 0, 0, 0.022) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 0, 0, 0.022) 1px, transparent 1px),
+          linear-gradient(0deg, rgba(0, 0, 0, 0.035) 0.5px, transparent 0.5px),
+          linear-gradient(90deg, rgba(0, 0, 0, 0.035) 0.5px, transparent 0.5px);
+        background-size: 9px 9px, 9px 9px, 2px 2px, 2px 2px;
+      }
+      .page-frame {
+        box-shadow:
+          inset 0 0 0 1px rgba(0, 0, 0, 0.22),
+          inset 0 0 0 10px rgba(0, 0, 0, 0.035);
+      }
+      .divider {
+        border-top: 1px solid #0f0f0f;
+      }
+      .rule-double {
+        border-top: 3px double #0f0f0f;
+      }
+      /* Multi-column body copy */
+      .article-columns {
+        column-count: 1;
+        column-gap: 2.2rem;
+      }
+      @media (min-width: 900px) {
+        .article-columns {
+          column-count: 2;
+        }
+      }
+      /* Drop cap */
+      .dropcap::first-letter {
+        float: left;
+        font-size: 3rem;
+        line-height: 1;
+        padding-right: 0.3rem;
+        font-weight: 800;
+      }
+      /* Pull quote */
+      .pull-quote {
+        border-left: 2px solid #0f0f0f;
+        padding-left: 0.8rem;
+        font-style: italic;
+      }
+      /* Banner ribbon */
+      .ribbon {
+        position: relative;
+        display: inline-block;
+        padding: 0.25rem 0.7rem;
+        background: #000;
+        color: #fff;
+        letter-spacing: 0.05em;
+      }
+      .ribbon::after {
+        content: "";
+        position: absolute;
+        right: -8px;
+        top: 0;
+        border-top: 12px solid #000;
+        border-bottom: 12px solid #000;
+        border-right: 8px solid transparent;
+      }
+      /* Faux photo box */
+      .photo-box {
+        background:
+          linear-gradient(rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.08)),
+          repeating-linear-gradient(
+            45deg,
+            rgba(0, 0, 0, 0.07),
+            rgba(0, 0, 0, 0.07) 6px,
+            rgba(0, 0, 0, 0.02) 6px,
+            rgba(0, 0, 0, 0.02) 12px
+          );
+        position: relative;
+        overflow: hidden;
+      }
+      .photo-box::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(120deg, rgba(179, 0, 0, 0.2), transparent 45%);
+        mix-blend-mode: multiply;
+      }
+      /* Subtle fold shadow */
+      .fold {
+        position: relative;
+      }
+      .fold::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 0;
+        width: 1px;
+        height: 100%;
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.2),
+          rgba(0, 0, 0, 0.04) 35%,
+          rgba(0, 0, 0, 0.04) 65%,
+          rgba(0, 0, 0, 0.2)
+        );
+        pointer-events: none;
+      }
+      /* Red accent helpers */
+      .accent-red {
+        color: #b30000;
+      }
+      .accent-line {
+        background: linear-gradient(90deg, #b30000, transparent);
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 9999px;
+        background: #b30000;
+      }
+      .pulse {
+        animation: pulse 1.8s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.9;
+        }
+        50% {
+          transform: scale(1.35);
+          opacity: 0.45;
+        }
+      }
+      .float-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .float-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+      }
+      .fade-up {
+        animation: fadeUp 0.7s ease both;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      /* Scroll reveal */
+      .scroll-reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+      }
+      .scroll-reveal.revealed {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      /* Typing effect */
+      .typing-cursor::after {
+        content: "|";
+        animation: blink 1s infinite;
+        color: #b30000;
+      }
+      @keyframes blink {
+        0%, 50% { opacity: 1; }
+        51%, 100% { opacity: 0; }
+      }
+      /* Ticker animation */
+      .ticker-container {
+        position: relative;
+        overflow: hidden;
+      }
+      .ticker {
+        display: inline-block;
+        white-space: nowrap;
+        animation: ticker-scroll 25s linear infinite;
+        will-change: transform;
+      }
+      @keyframes ticker-scroll {
+        0% { transform: translateX(100%); }
+        100% { transform: translateX(-100%); }
+      }
+      .ticker:hover {
+        animation-play-state: paused;
+      }
+      /* Shake on hover */
+      .shake-on-hover:hover {
+        animation: shake 0.5s ease;
+      }
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-4px) rotate(-1deg); }
+        75% { transform: translateX(4px) rotate(1deg); }
+      }
+      /* Glow effect */
+      .glow-on-hover:hover {
+        text-shadow: 0 0 8px rgba(179, 0, 0, 0.6);
+        transition: text-shadow 0.3s ease;
+      }
+      /* Counter animation */
+      .counter {
+        display: inline-block;
+      }
+      /* Photo box animation */
+      .photo-box-animated {
+        position: relative;
+        overflow: hidden;
+      }
+      .photo-box-animated::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          45deg,
+          transparent 30%,
+          rgba(179, 0, 0, 0.1) 50%,
+          transparent 70%
+        );
+        animation: scan 3s linear infinite;
+        pointer-events: none;
+      }
+      @keyframes scan {
+        0% { transform: translate(-50%, -50%) rotate(0deg); }
+        100% { transform: translate(-50%, -50%) rotate(360deg); }
+      }
+      /* Ripple effect */
+      .ripple {
+        position: relative;
+        overflow: hidden;
+      }
+      .ripple::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(179, 0, 0, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+      }
+      .ripple:active::after {
+        width: 300px;
+        height: 300px;
+      }
+      /* Parallax */
+      .parallax-slow {
+        transition: transform 0.3s ease-out;
+      }
+      /* Cursor pointer */
+      .cursor-pointer {
+        cursor: pointer;
+      }
+      /* Article overlay */
+      .article-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.75);
+        -webkit-backdrop-filter: blur(3px);
+        backdrop-filter: blur(3px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9990;
+        padding: 1rem;
+      }
+      .article-overlay.active {
+        display: flex;
+      }
+      .article-sheet {
+        background: #fff;
+        max-width: 900px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        border: 1px solid #111;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+        transform-origin: left center;
+        transform: perspective(1400px) rotateY(-8deg);
+        opacity: 0;
+        transition: transform 0.6s ease, opacity 0.6s ease;
+      }
+      .article-sheet.turn {
+        transform: perspective(1400px) rotateY(0deg);
+        opacity: 1;
+      }
+      .article-sheet header {
+        border-bottom: 1px solid #111;
+      }
+      .article-body p {
+        margin-bottom: 0.85rem;
+        line-height: 1.7;
+        text-align: justify;
+      }
+      #article-image-container {
+        max-width: 100%;
+      }
+      .overlay-img {
+        width: 100%;
+        height: auto;
+        max-height: 420px;
+        display: block;
+        object-fit: cover;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+      }
+      .hero-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .card-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .article-close {
+        position: absolute;
+        top: 12px;
+        right: 16px;
+        font-size: 18px;
+        padding: 6px 10px;
+        border: 1px solid #111;
+        background: #fff;
+      }
+    </style>
+  </head>
+  <body class="font-serif text-gray-900 leading-relaxed animate-fade">
+    <div class="max-w-6xl mx-auto px-4 py-8 md:py-10 lg:py-12 bg-white shadow-[0_12px_32px_rgba(0,0,0,0.09)] page-frame fold">
+      <!-- Ticker strip -->
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between text-[11px] uppercase tracking-[0.22em] mb-3 border border-black px-3 py-2 bg-white">
+        <div class="flex items-center gap-2">
+          <span class="px-2 py-1 border border-black font-bold">Established 2025</span>
+          <span class="px-2 py-1 border border-black">Daily Edition</span>
+          <span class="px-2 py-1 border border-black">Black & White</span>
+        </div>
+        <div class="mt-2 md:mt-0 flex items-center gap-2">
+          <span class="px-2 py-1 border border-black">Price: 1.00</span>
+          <span class="px-2 py-1 border border-black" id="date-label">Date</span>
+          <span class="px-2 py-1 border border-black">First Press 06:00</span>
+        </div>
+      </div>
+
+      <!-- Nav -->
+      <nav class="hidden md:flex items-center justify-between text-[11px] uppercase tracking-[0.3em] border border-black px-3 py-2 mb-4 bg-black text-white">
+        <div class="flex gap-6">
+          <span>World</span>
+          <span>Media</span>
+          <span>Technology</span>
+          <span>Society</span>
+          <span>Opinion</span>
+        </div>
+        <div class="flex gap-3 items-center">
+          <span class="px-2 py-1 border border-white">Newsroom</span>
+          <span class="px-2 py-1 border border-white">Markets</span>
+        </div>
+      </nav>
+
+      <!-- Breaking ticker -->
+      <div class="flex items-center gap-3 border border-black px-3 py-2 mb-4 bg-white uppercase text-[11px] tracking-[0.26em] overflow-hidden">
+        <span class="dot pulse"></span>
+        <span class="font-bold">Breaking</span>
+        <div class="flex-1 h-px accent-line"></div>
+        <div class="ticker-container overflow-hidden flex-1">
+          <span class="ticker text-xs" id="ticker-text">Minsk News: Three new metro stations open • Belarus plans nuclear expansion • Student wins science competition • Lebyazhy district grows • Shabany recycling plant planned •</span>
+        </div>
+      </div>
+
+      <!-- Masthead -->
+      <header class="text-center mb-8">
+        <div class="divider mb-2"></div>
+        <p class="uppercase text-xs tracking-[0.35em] mb-1" id="tagline">International • Unbiased • Clear</p>
+        <h1 class="text-4xl md:text-5xl font-black tracking-[0.26em] uppercase font-headline glow-on-hover" id="main-title">
+          GLOBAL MEDIA REPORT
+        </h1>
+        <p class="text-sm tracking-[0.22em] uppercase mt-1" id="subtitle">
+          Inform — Educate — Influence
+        </p>
+        <div class="flex justify-center gap-6 text-xs mt-2 uppercase">
+          <span>Issue No. <span class="counter" data-target="1">0</span></span>
+          <span class="px-2 border border-black shake-on-hover">Late Edition</span>
+          <span class="px-2 border border-black shake-on-hover">Printed for Presentation</span>
+        </div>
+        <div class="rule-double mt-3"></div>
+      </header>
+
+      <!-- Hero row -->
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-10">
+        <article class="lg:col-span-8 border border-black/80 p-6 bg-white shadow-sm float-card fade-up">
+          <div class="flex items-center justify-between text-[11px] uppercase tracking-[0.3em] mb-3">
+            <span class="px-2 py-1 border border-black font-bold">Front Page</span>
+            <span class="divider flex-1 mx-3"></span>
+            <span class="px-2 py-1 border border-black">Page A1</span>
+          </div>
+          <h2 class="text-3xl md:text-4xl font-black leading-tight uppercase mb-2 font-headline">
+            “The Power of Mass Media Today”
+          </h2>
+          <p class="text-xs uppercase tracking-wide mb-4">Clear story for oral presentation — easy to tell in class.</p>
+          <div class="w-full h-52 mb-4 border border-black/70 overflow-hidden relative">
+            <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80" alt="Mass Media" class="hero-img" />
+            <div class="absolute bottom-0 left-0 right-0 bg-white/80 border-t border-black/40 px-3 py-2 text-[11px] uppercase tracking-[0.2em]">
+              Mass media shapes how we see the world today.
+            </div>
+        </div>
+          <div class="article-columns text-justify text-base md:text-lg leading-7">
+          <p class="mb-4 dropcap">
+              Mass media shapes how we see the world. Every day we read headlines,
+              watch short clips, and listen to quick updates. Because the flow of
+              information is fast, trustworthy reporting matters even more. A clear
+              voice helps people feel calm, informed, and ready to act.
+          </p>
+          <p class="mb-4">
+              Good journalism uses three steps: check facts, present them simply,
+              and explain why they matter. When stories are easy to understand,
+              audiences remember them better. This is why modern newsrooms mix sharp
+              writing with visual aids that still respect the classic newspaper look.
+          </p>
+          <p class="mb-4 pull-quote text-base md:text-lg">
+              “Speed is nothing without clarity — truth travels farther when it is
+              simple, honest, and calm.”
+          </p>
+          <p class="mb-0">
+              Social media can spread headlines in seconds. To stay balanced, we
+              compare sources, read beyond the title, and ask: who benefits? By
+              doing this, we keep news helpful rather than heavy — perfect for a
+              university presentation that needs short, memorable points.
+            </p>
+          </div>
+        </article>
+
+        <aside class="lg:col-span-4 border border-black/80 bg-white shadow-sm float-card fade-up">
+          <div class="border-b border-black/70 px-5 py-3 flex items-center justify-between text-[11px] uppercase tracking-[0.28em]">
+            <span class="font-bold">Bulletin</span>
+            <span class="px-2 py-1 border border-black">Today</span>
+          </div>
+          <div class="p-5 space-y-4 text-sm leading-6">
+            <div class="border border-black/70 p-3">
+              <p class="uppercase text-[11px] tracking-[0.26em] mb-1">Campus Brief</p>
+              <p class="font-semibold">Students lead “Media in 5 minutes” talks.</p>
+              <p class="text-gray-800">Simple headlines help the audience follow every idea.</p>
+            </div>
+            <div class="border border-black/70 p-3">
+              <p class="uppercase text-[11px] tracking-[0.26em] mb-1">Weather</p>
+              <p class="font-semibold">City: Calm & clear</p>
+              <p class="text-gray-800">Perfect day to present: no rain, light breeze.</p>
+            </div>
+            <div class="border border-black/70 p-3">
+              <p class="uppercase text-[11px] tracking-[0.26em] mb-1">Markets</p>
+              <p class="font-semibold">Tech +1.2% · Media +0.6% · Education steady</p>
+              <p class="text-gray-800">Positive tone keeps the story light and optimistic.</p>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <!-- Secondary features -->
+      <section class="mb-8 scroll-reveal">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-xl md:text-2xl font-black uppercase glow-on-hover">World Media Highlights</h3>
+          <div class="flex-1 ml-4 divider"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+          <article class="md:col-span-5 border border-black/80 p-5 shadow-sm bg-white float-card">
+            <div class="flex items-center justify-between text-[11px] uppercase tracking-[0.28em] mb-3">
+              <span class="px-2 py-1 border border-black font-bold">Analysis</span>
+              <span class="divider flex-1 mx-3"></span>
+              <span class="px-2 py-1 border border-black">Page A2</span>
+            </div>
+            <h4 class="text-xl font-black leading-tight uppercase mb-3 font-headline">
+              From Newspapers to Digital Media
+            </h4>
+            <p class="text-justify text-sm md:text-base leading-6">
+              Print once ruled mornings. Today, phones deliver alerts in seconds.
+              Yet print still offers calm focus. Balanced newsrooms use both: fast
+              updates online and deeper context on paper.
+            </p>
+          </article>
+          <article class="md:col-span-4 border border-black/80 p-4 shadow-sm bg-white float-card">
+            <div class="flex items-center justify-between text-[11px] uppercase tracking-[0.28em] mb-2">
+              <span class="px-2 py-1 border border-black font-bold">Report</span>
+              <span class="divider flex-1 mx-3"></span>
+              <span class="px-2 py-1 border border-black">Page A3</span>
+            </div>
+            <h4 class="text-lg font-extrabold leading-tight uppercase mb-2 font-headline">
+              How Social Media Spreads Information
+            </h4>
+            <p class="text-justify text-sm md:text-base leading-6">
+              Short clips can reach millions before breakfast. A smart habit: read
+              the full post, check the source, then share. Clear thinking keeps the
+              feed helpful.
+            </p>
+          </article>
+          <article class="md:col-span-3 border border-black/80 p-4 shadow-sm bg-white float-card">
+            <div class="flex items-center justify-between text-[11px] uppercase tracking-[0.28em] mb-2">
+              <span class="px-2 py-1 border border-black font-bold">Perspective</span>
+              <span class="divider flex-1 mx-3"></span>
+              <span class="px-2 py-1 border border-black">Page A4</span>
+            </div>
+            <h4 class="text-lg font-extrabold leading-tight uppercase mb-2 font-headline">
+              Television Meets Streaming
+            </h4>
+            <p class="text-justify text-sm md:text-base leading-6">
+              Evening news still gathers families. Streaming adds choice and pause
+              buttons. Together they create a calmer, smarter audience.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- Briefs -->
+      <section class="mb-6 scroll-reveal">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-xl font-black uppercase glow-on-hover">Briefs & Snapshots</h3>
+          <div class="flex-1 ml-4 divider"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="border border-black p-3 bg-white shadow-sm relative">
+            <span class="ribbon text-[11px] absolute -top-3 left-3">Brief</span>
+            <p class="text-sm font-semibold uppercase mt-2 mb-1">Did You Know?</p>
+            <p class="text-sm">
+              Over 60% of students meet news first on their phones. A calm headline
+              keeps their attention.
+            </p>
+          </div>
+          <div class="border border-black p-3 bg-white shadow-sm relative">
+            <span class="ribbon text-[11px] absolute -top-3 left-3">Fact</span>
+            <p class="text-sm font-semibold uppercase mt-2 mb-1">History Note</p>
+            <p class="text-sm">
+              The first printed newspapers appeared in the 17th century — black ink,
+              white paper, clear type.
+            </p>
+          </div>
+          <div class="border border-black p-3 bg-white shadow-sm relative">
+            <span class="ribbon text-[11px] absolute -top-3 left-3">Update</span>
+            <p class="text-sm font-semibold uppercase mt-2 mb-1">Quick News</p>
+            <p class="text-sm">
+              Online video now reaches billions, yet concise writing remains the
+              heart of every strong story.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Visual stories -->
+      <section class="mb-8 scroll-reveal">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-xl md:text-2xl font-black uppercase glow-on-hover">Visual Stories</h3>
+          <div class="flex-1 ml-4 divider"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div class="border border-black/80 bg-white p-3 shadow-sm float-card ripple cursor-pointer">
+            <div class="h-36 mb-3 border border-black/60 overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=700&q=80" alt="Education" class="card-img" />
+            </div>
+            <p class="uppercase text-[11px] tracking-[0.24em] mb-1 accent-red">Education</p>
+            <p class="font-semibold leading-6">Belarusian student wins international science competition in Minsk.</p>
+          </div>
+          <div class="border border-black/80 bg-white p-3 shadow-sm float-card ripple cursor-pointer">
+            <div class="h-36 mb-3 border border-black/60 overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=700&q=80" alt="Energy" class="card-img" />
+            </div>
+            <p class="uppercase text-[11px] tracking-[0.24em] mb-1 accent-red">Energy</p>
+            <p class="font-semibold leading-6">Belarus plans nuclear power expansion for clean energy future.</p>
+          </div>
+          <div class="border border-black/80 bg-white p-3 shadow-sm float-card ripple cursor-pointer">
+            <div class="h-36 mb-3 border border-black/60 overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=700&q=80" alt="City Development" class="card-img" />
+            </div>
+            <p class="uppercase text-[11px] tracking-[0.24em] mb-1 accent-red">Development</p>
+            <p class="font-semibold leading-6">Minsk districts grow with modern facilities and new infrastructure.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Minsk articles list -->
+      <section class="mb-10 scroll-reveal" id="minsk-articles">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-xl md:text-2xl font-black uppercase glow-on-hover">Minsk Stories — Tap to Read</h3>
+          <div class="flex-1 ml-4 divider"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="border border-black/80 bg-white p-4 shadow-sm float-card ripple cursor-pointer article-link" data-article="1">
+            <p class="uppercase text-[11px] tracking-[0.24em] mb-1 accent-red">Transport</p>
+            <p class="font-semibold leading-6">Three new metro stations open in Minsk.</p>
+            <p class="text-sm text-gray-800">Aerodromnaya, Nemorshansky Garden, and Koval Sloboda stations.</p>
+          </div>
+          <div class="border border-black/80 bg-white p-4 shadow-sm float-card ripple cursor-pointer article-link" data-article="2">
+            <p class="uppercase text-[11px] tracking-[0.24em] mb-1 accent-red">Energy</p>
+            <p class="font-semibold leading-6">Belarus plans to expand nuclear power generation.</p>
+            <p class="text-sm text-gray-800">More clean energy for the country's future.</p>
+          </div>
+          <div class="border border-black/80 bg-white p-4 shadow-sm float-card ripple cursor-pointer article-link" data-article="3">
+            <p class="uppercase text-[11px] tracking-[0.24em] mb-1 accent-red">Education</p>
+            <p class="font-semibold leading-6">Belarusian student wins international science competition.</p>
+            <p class="text-sm text-gray-800">Energy-efficient technology for textile industry.</p>
+          </div>
+          <div class="border border-black/80 bg-white p-4 shadow-sm float-card ripple cursor-pointer article-link" data-article="4">
+            <p class="uppercase text-[11px] tracking-[0.24em] mb-1 accent-red">Development</p>
+            <p class="font-semibold leading-6">Lebyazhy district grows with new facilities.</p>
+            <p class="text-sm text-gray-800">Modern housing near Minsk Arena and shopping centers.</p>
+          </div>
+          <div class="border border-black/80 bg-white p-4 shadow-sm float-card ripple cursor-pointer article-link" data-article="5">
+            <p class="uppercase text-[11px] tracking-[0.24em] mb-1 accent-red">Industry</p>
+            <p class="font-semibold leading-6">Shabany district plans new recycling plant.</p>
+            <p class="text-sm text-gray-800">Korean company helps build waste processing facility.</p>
+          </div>
+          <div class="border border-black/80 bg-white p-4 shadow-sm float-card ripple cursor-pointer article-link" data-article="6">
+            <p class="uppercase text-[11px] tracking-[0.24em] mb-1 accent-red">Sports</p>
+            <p class="font-semibold leading-6">FC Fenix continues playing in Minsk leagues.</p>
+            <p class="text-sm text-gray-800">Local football club stays active in amateur competitions.</p>
+          </div>
+          <div class="border border-black/80 bg-white p-4 shadow-sm float-card ripple cursor-pointer article-link" data-article="7">
+            <p class="uppercase text-[11px] tracking-[0.24em] mb-1 accent-red">Urban</p>
+            <p class="font-semibold leading-6">Yugo-Zapad district develops with new shops.</p>
+            <p class="text-sm text-gray-800">Dzerzhinsky Avenue becomes main street of the area.</p>
+          </div>
+          <div class="border border-black/80 bg-white p-4 shadow-sm float-card ripple cursor-pointer article-link" data-article="8">
+            <p class="uppercase text-[11px] tracking-[0.24em] mb-1 accent-red">Metro</p>
+            <p class="font-semibold leading-6">Aerodromnaya station opens on Green Line.</p>
+            <p class="text-sm text-gray-800">Modern station with platform screen doors.</p>
+          </div>
+          <div class="border border-black/80 bg-white p-4 shadow-sm float-card ripple cursor-pointer article-link" data-article="9">
+            <p class="uppercase text-[11px] tracking-[0.24em] mb-1 accent-red">Recreation</p>
+            <p class="font-semibold leading-6">Drozdy recreation area attracts families.</p>
+            <p class="text-sm text-gray-800">Beaches, water park, and sports facilities near city center.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Closing line -->
+      <footer class="mt-6 pt-4 border-t border-black/80 text-center text-xs uppercase tracking-wide text-gray-700">
+        Crafted for university presentation — light, clear, and unmistakably printed.
+      </footer>
+    </div>
+
+    <!-- Article overlay -->
+    <div class="article-overlay" id="article-overlay">
+      <div class="article-sheet" id="article-sheet">
+        <button class="article-close" id="article-close">Close</button>
+        <header class="p-5">
+          <p class="uppercase text-[11px] tracking-[0.24em] text-gray-700" id="article-kicker"></p>
+          <h2 class="text-3xl font-headline font-black leading-tight uppercase mt-1 mb-2" id="article-title"></h2>
+          <p class="text-sm uppercase tracking-[0.18em] text-gray-700" id="article-meta"></p>
+          <div class="rule-double mt-3"></div>
+        </header>
+        <div class="px-5 pb-3" id="article-image-container"></div>
+        <div class="p-5 article-body text-base md:text-lg leading-7" id="article-body"></div>
+      </div>
+    </div>
+
+    <script>
+      // ===== DATE FORMATTER =====
+      const dateLabel = document.getElementById("date-label");
+      const formatter = new Intl.DateTimeFormat("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      });
+      dateLabel.textContent = formatter.format(new Date());
+
+      // ===== TYPING EFFECT FOR TITLE =====
+      function typeWriter(element, text, speed = 100) {
+        let i = 0;
+        element.textContent = "";
+        function type() {
+          if (i < text.length) {
+            element.textContent += text.charAt(i);
+            i++;
+            setTimeout(type, speed);
+          } else {
+            element.classList.add("typing-cursor");
+            setTimeout(() => element.classList.remove("typing-cursor"), 2000);
+          }
+        }
+        type();
+      }
+
+      // Apply typing effect to main title after page load
+      window.addEventListener("load", () => {
+        const mainTitle = document.getElementById("main-title");
+        const originalText = mainTitle.textContent;
+        setTimeout(() => {
+          typeWriter(mainTitle, originalText, 80);
+        }, 500);
+      });
+
+      // ===== SCROLL REVEAL ANIMATION =====
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px"
+      };
+
+      const scrollObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("revealed");
+            scrollObserver.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      // Observe all scroll-reveal elements
+      document.querySelectorAll(".scroll-reveal").forEach(el => {
+        scrollObserver.observe(el);
+      });
+
+      // ===== COUNTER ANIMATION =====
+      function animateCounter(element, target, duration = 2000) {
+        const start = 0;
+        const increment = target / (duration / 16);
+        let current = start;
+
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= target) {
+            element.textContent = target;
+            clearInterval(timer);
+          } else {
+            element.textContent = Math.floor(current);
+          }
+        }, 16);
+      }
+
+      // Animate counters when they come into view
+      const counterObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !entry.target.dataset.animated) {
+            const target = parseInt(entry.target.dataset.target);
+            animateCounter(entry.target, target);
+            entry.target.dataset.animated = "true";
+            counterObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.5 });
+
+      document.querySelectorAll(".counter").forEach(counter => {
+        counterObserver.observe(counter);
+      });
+
+      // ===== PARALLAX EFFECT =====
+      let parallaxElements = document.querySelectorAll(".parallax-slow");
+      
+      window.addEventListener("scroll", () => {
+        const scrolled = window.pageYOffset;
+        parallaxElements.forEach(el => {
+          const speed = 0.5;
+          el.style.transform = `translateY(${scrolled * speed}px)`;
+        });
+      });
+
+      // ===== INTERACTIVE CARDS =====
+      document.querySelectorAll(".float-card").forEach(card => {
+        card.addEventListener("mouseenter", function() {
+          this.style.transform = "translateY(-8px) scale(1.02)";
+          this.style.transition = "all 0.3s ease";
+        });
+        
+        card.addEventListener("mouseleave", function() {
+          this.style.transform = "translateY(0) scale(1)";
+        });
+
+        // Click ripple effect
+        card.classList.add("ripple");
+        card.addEventListener("click", function(e) {
+          const ripple = document.createElement("span");
+          const rect = this.getBoundingClientRect();
+          const size = Math.max(rect.width, rect.height);
+          const x = e.clientX - rect.left - size / 2;
+          const y = e.clientY - rect.top - size / 2;
+          
+          ripple.style.width = ripple.style.height = size + "px";
+          ripple.style.left = x + "px";
+          ripple.style.top = y + "px";
+          ripple.style.position = "absolute";
+          ripple.style.borderRadius = "50%";
+          ripple.style.background = "rgba(179, 0, 0, 0.3)";
+          ripple.style.pointerEvents = "none";
+          ripple.style.animation = "ripple-animation 0.6s ease-out";
+          
+          this.appendChild(ripple);
+          setTimeout(() => ripple.remove(), 600);
+        });
+      });
+
+      // Add ripple animation keyframes
+      const style = document.createElement("style");
+      style.textContent = `
+        @keyframes ripple-animation {
+          to {
+            transform: scale(4);
+            opacity: 0;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+
+      // ===== TICKER ENHANCEMENT =====
+      const tickerText = document.getElementById("ticker-text");
+      if (tickerText) {
+        // Duplicate content for seamless loop
+        const originalText = tickerText.textContent;
+        tickerText.textContent = originalText + " " + originalText;
+      }
+
+      // ===== RANDOM NEWS UPDATES =====
+      const newsUpdates = [
+        "Breaking: Three new metro stations open in Minsk •",
+        "Minsk: Belarus plans nuclear power expansion •",
+        "Minsk student wins international science competition •",
+        "Lebyazhy district grows with new facilities •",
+        "Shabany district plans new recycling plant •",
+        "FC Fenix continues playing in Minsk leagues •",
+        "Yugo-Zapad district develops with new shops •",
+        "Aerodromnaya station opens on Green Line •",
+        "Drozdy recreation area attracts families •"
+      ];
+
+      function updateTicker() {
+        const randomNews = newsUpdates[Math.floor(Math.random() * newsUpdates.length)];
+        if (tickerText) {
+          tickerText.textContent = randomNews + " " + tickerText.textContent.split(" •")[0] + " •";
+        }
+      }
+
+      // Update ticker every 10 seconds
+      setInterval(updateTicker, 10000);
+
+      // ===== SMOOTH SCROLL FOR ANCHORS =====
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function(e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+      });
+
+      // ===== DYNAMIC HEADLINE ROTATION =====
+      const headlines = [
+        "The Power of Mass Media Today",
+        "Journalism in the Digital Age",
+        "Truth, Speed, and Clarity"
+      ];
+      
+      let headlineIndex = 0;
+      const headlineElement = document.querySelector('h2.font-headline');
+      
+      if (headlineElement) {
+        setInterval(() => {
+          headlineIndex = (headlineIndex + 1) % headlines.length;
+          headlineElement.style.opacity = "0";
+          setTimeout(() => {
+            headlineElement.textContent = `"${headlines[headlineIndex]}"`;
+            headlineElement.style.transition = "opacity 0.5s ease";
+            headlineElement.style.opacity = "1";
+          }, 300);
+        }, 8000);
+      }
+
+      // ===== PERFORMANCE: LAZY LOAD ANIMATIONS =====
+      let ticking = false;
+      function updateAnimations() {
+        // Batch DOM reads/writes for better performance
+        ticking = false;
+      }
+
+      window.addEventListener("scroll", () => {
+        if (!ticking) {
+          window.requestAnimationFrame(updateAnimations);
+          ticking = true;
+        }
+      });
+
+      // ===== CONSOLE MESSAGE =====
+      console.log("%c📰 GLOBAL MEDIA REPORT", "font-size: 20px; font-weight: bold; color: #b30000;");
+      console.log("%cCrafted with precision for university presentation", "font-size: 12px; color: #666;");
+
+      // ===== PARTICLE EFFECT ON CLICK =====
+      document.addEventListener("click", function(e) {
+        if (Math.random() > 0.7) { // 30% chance
+          const particle = document.createElement("div");
+          particle.style.position = "fixed";
+          particle.style.left = e.clientX + "px";
+          particle.style.top = e.clientY + "px";
+          particle.style.width = "4px";
+          particle.style.height = "4px";
+          particle.style.background = "#b30000";
+          particle.style.borderRadius = "50%";
+          particle.style.pointerEvents = "none";
+          particle.style.zIndex = "9999";
+          particle.style.animation = "particle-fade 1s ease-out forwards";
+          
+          document.body.appendChild(particle);
+          setTimeout(() => particle.remove(), 1000);
+        }
+      });
+
+      // Add particle animation
+      const particleStyle = document.createElement("style");
+      particleStyle.textContent += `
+        @keyframes particle-fade {
+          0% {
+            transform: translate(0, 0) scale(1);
+            opacity: 1;
+          }
+          100% {
+            transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) scale(0);
+            opacity: 0;
+          }
+        }
+      `;
+      document.head.appendChild(particleStyle);
+
+      // ===== KEYBOARD SHORTCUTS =====
+      document.addEventListener("keydown", function(e) {
+        // Press 'R' to refresh animations
+        if (e.key === "r" || e.key === "R") {
+          document.querySelectorAll(".scroll-reveal").forEach(el => {
+            el.classList.remove("revealed");
+            scrollObserver.observe(el);
+          });
+        }
+        // Press 'T' to toggle ticker
+        if (e.key === "t" || e.key === "T") {
+          const ticker = document.getElementById("ticker-text");
+          if (ticker) {
+            ticker.style.animationPlayState = 
+              ticker.style.animationPlayState === "paused" ? "running" : "paused";
+          }
+        }
+      });
+
+      // ===== MOUSE TRAIL EFFECT (subtle) =====
+      let mouseTrail = [];
+      const maxTrailLength = 5;
+
+      document.addEventListener("mousemove", function(e) {
+        if (Math.random() > 0.95) { // Very subtle, 5% chance
+          const trail = document.createElement("div");
+          trail.style.position = "fixed";
+          trail.style.left = e.clientX + "px";
+          trail.style.top = e.clientY + "px";
+          trail.style.width = "2px";
+          trail.style.height = "2px";
+          trail.style.background = "rgba(179, 0, 0, 0.3)";
+          trail.style.borderRadius = "50%";
+          trail.style.pointerEvents = "none";
+          trail.style.zIndex = "9998";
+          trail.style.transition = "opacity 0.5s ease";
+          
+          document.body.appendChild(trail);
+          setTimeout(() => {
+            trail.style.opacity = "0";
+            setTimeout(() => trail.remove(), 500);
+          }, 100);
+        }
+      });
+
+      // ===== PAGE LOAD CELEBRATION =====
+      window.addEventListener("load", function() {
+        // Confetti-like effect on load
+        for (let i = 0; i < 20; i++) {
+          setTimeout(() => {
+            const confetti = document.createElement("div");
+            confetti.style.position = "fixed";
+            confetti.style.left = Math.random() * 100 + "%";
+            confetti.style.top = "-10px";
+            confetti.style.width = "6px";
+            confetti.style.height = "6px";
+            confetti.style.background = i % 2 === 0 ? "#b30000" : "#000";
+            confetti.style.pointerEvents = "none";
+            confetti.style.zIndex = "9999";
+            confetti.style.animation = `confetti-fall ${1 + Math.random()}s linear forwards`;
+            
+            document.body.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 2000);
+          }, i * 50);
+        }
+      });
+
+      // Add confetti animation
+      const confettiStyle = document.createElement("style");
+      confettiStyle.textContent += `
+        @keyframes confetti-fall {
+          to {
+            transform: translateY(100vh) rotate(360deg);
+            opacity: 0;
+          }
+        }
+      `;
+      document.head.appendChild(confettiStyle);
+
+      // ===== PERFORMANCE MONITORING =====
+      if (window.performance && window.performance.timing) {
+        window.addEventListener("load", function() {
+          const loadTime = window.performance.timing.loadEventEnd - window.performance.timing.navigationStart;
+          console.log(`%c⚡ Page loaded in ${loadTime}ms`, "color: #0a0; font-weight: bold;");
+        });
+      }
+
+      // ===== ARTICLE DATA =====
+      const articleData = {
+        1: {
+          kicker: "Transport",
+          title: "Three New Metro Stations Open in Minsk",
+          meta: "Aerodromnaya, Nemorshansky Garden, and Koval Sloboda stations improve city transport",
+          image: `<img class="overlay-img" src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?auto=format&fit=crop&w=1200&q=80" alt="Minsk Metro Station" />`,
+          paragraphs: [
+            "On December 30, 2024, Minsk opened three new metro stations on the Green Line. These stations are called Aerodromnaya, Nemorshansky Garden, and Koval Sloboda. This is big news for people who live in Minsk because it makes travel much easier.",
+            "The Aerodromnaya station is special. It sits on the land where the old Minsk-1 airport used to be. The station has modern platform screen doors. These doors keep people safe and make the station look very clean and modern.",
+            "People who use the metro say the new stations are beautiful. The walls have nice designs, and everything is bright and easy to see. The stations connect different parts of the city, so people can get to work, school, or shopping centers faster.",
+            "City leaders say this is just the beginning. They plan to build more metro stations in the coming years. The goal is to make public transport better for everyone in Minsk. This will help reduce traffic on the roads and make the city cleaner.",
+            "Engineers worked hard to build these stations. They used strong materials and modern technology. The stations can handle many people at the same time. They are also safe and easy to use for people with disabilities.",
+            "The new metro line helps connect the city center with areas that were far away before. Now people can travel from one end of Minsk to the other in less time. This makes life easier for families and workers."
+          ]
+        },
+        2: {
+          kicker: "Energy",
+          title: "Belarus Plans to Expand Nuclear Power Generation",
+          meta: "Country notifies IAEA about plans for more clean energy",
+          image: `<img class="overlay-img" src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=80" alt="Nuclear Power Plant" />`,
+          paragraphs: [
+            "On December 5, 2025, Belarus told the International Atomic Energy Agency (IAEA) about its plans to build more nuclear power. This is important news because nuclear energy helps countries make electricity without polluting the air.",
+            "Belarus already has one nuclear power plant. It started working a few years ago. Now the country wants to build more nuclear reactors. This will help Belarus make more clean energy for homes, schools, hospitals, and factories.",
+            "Nuclear power is different from coal or gas power. It does not create smoke or pollution. It uses special materials called uranium to make heat. This heat turns water into steam, and the steam makes electricity.",
+            "Many countries around the world use nuclear power. It is safe when built and used correctly. Belarus works with experts from other countries to make sure everything is done right. The IAEA helps check that everything follows safety rules.",
+            "Building nuclear power plants takes many years and costs a lot of money. But once they are built, they can make electricity for many decades. This helps countries have steady power for a long time.",
+            "People in Belarus will benefit from more nuclear power. Their electricity bills might stay stable, and the air will be cleaner. The country will also depend less on buying energy from other countries. This makes Belarus more independent and secure.",
+            "Experts say nuclear power is good for the environment. It does not create carbon dioxide, which causes climate change. This helps Belarus meet its goals for clean energy and protecting nature."
+          ]
+        },
+        3: {
+          kicker: "Education",
+          title: "Belarusian Student Wins International Science Competition",
+          meta: "Maxim Isaev from Kosygin University takes first place",
+          image: `<img class="overlay-img" src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=80" alt="Student Award Ceremony" />`,
+          paragraphs: [
+            "In April 2025, a student from Belarus won first place at an international science competition. His name is Maxim Isaev, and he studies at Kosygin University in Minsk. This is a great achievement for him and for Belarus.",
+            "Maxim's project was about making textile factories use less energy. Textile factories make clothes and fabrics. They use a lot of electricity and heat to dry materials. Maxim found a new way to dry fabrics that uses less energy.",
+            "The competition was called PAHT-2025. It was an international event where students from many countries showed their science projects. Experts from around the world judged the projects. They looked for ideas that are useful and new.",
+            "Maxim's idea helps factories save money on electricity. It also helps protect the environment because less energy means less pollution. Factories can use this new method to make clothes in a cleaner way.",
+            "Maxim worked hard on his project for many months. He did experiments, read books, and talked with experts. His teachers at the university helped him understand the science behind his idea.",
+            "Winning this competition is important for Maxim's future. It shows that he is a good scientist and engineer. Companies might want to hire him to work on energy-saving projects. He might also continue studying to become a doctor of science.",
+            "This win also makes Belarus proud. It shows that Belarusian students can compete with students from anywhere in the world. It encourages other young people in Belarus to study science and engineering.",
+            "The university plans to help Maxim develop his idea further. They might build a small test facility to see if the method works in real factories. If it works well, factories around the world might use it."
+          ]
+        },
+        4: {
+          kicker: "Development",
+          title: "Lebyazhy District Grows with New Facilities",
+          meta: "Modern housing near Minsk Arena attracts families",
+          image: `<img class="overlay-img" src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&w=1200&q=80" alt="Modern City District" />`,
+          paragraphs: [
+            "Lebyazhy is a district in the northwest part of Minsk. It is growing fast and becoming a popular place to live. Many new buildings, shops, and parks are being built there.",
+            "One reason people like Lebyazhy is because it is close to Minsk Arena. Minsk Arena is a big sports and entertainment center. People go there to watch hockey games, concerts, and other events. Living near Minsk Arena means you can walk to these events.",
+            "The district is also near a place called Drozdy. Drozdy is a recreation area with beaches, a water park, and sports facilities. Families go there on weekends to relax and have fun. Having this nearby makes Lebyazhy a great place for families with children.",
+            "New apartment buildings in Lebyazhy are modern and comfortable. They have good heating, nice windows, and balconies with views. The buildings are close to schools, kindergartens, and shops, so families have everything they need nearby.",
+            "There is also a big shopping center called Zhdanovichi near Lebyazhy. People can buy food, clothes, electronics, and other things there. The shopping center has cafes and restaurants, so it is a nice place to spend time.",
+            "City planners are building new roads and improving public transport in Lebyazhy. This makes it easy to travel to other parts of Minsk. Buses and minibuses run regularly, and the metro might come to this area in the future.",
+            "The district has parks and playgrounds for children. There are also sports fields where people can play football, basketball, or tennis. This helps people stay healthy and meet their neighbors.",
+            "Real estate experts say that property prices in Lebyazhy are rising because more people want to live there. The area is safe, clean, and has good infrastructure. It is a good investment for families who want a modern home in Minsk."
+          ]
+        },
+        5: {
+          kicker: "Industry",
+          title: "Shabany District Plans New Recycling Plant",
+          meta: "Korean company helps build waste processing facility",
+          image: `<img class="overlay-img" src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1200&q=80" alt="Recycling Plant" />`,
+          paragraphs: [
+            "Shabany is a district in Minsk that has many factories and industrial buildings. It is a semi-industrial area, which means it has both factories and places where people live. Now there are plans to build a new recycling plant there.",
+            "A recycling plant is a factory that takes waste and turns it into new materials. For example, it can take old plastic bottles and make new plastic products. This helps reduce waste and protect the environment.",
+            "A company from South Korea called MECEN IPC will help build this plant. South Korea is known for having good recycling technology. The Korean company will share its knowledge and equipment with Belarus.",
+            "Building a recycling plant is important for Minsk. The city produces a lot of waste every day. Without recycling, all this waste would go to landfills, which take up space and can pollute the ground and water.",
+            "The new plant will sort different types of waste. It will separate paper, plastic, glass, and metal. Then it will process each type to make new materials. These materials can be sold to factories that make new products.",
+            "This project will create jobs for people in Minsk. The plant will need workers to operate machines, sort materials, and manage the facility. This is good for the local economy.",
+            "The Shabany district already has some big factories. One famous factory there makes home appliances like refrigerators and washing machines. It is called Atlant. The new recycling plant will fit well with the industrial character of the area.",
+            "Environmental experts say that recycling helps fight climate change. When we recycle materials, we use less energy than when we make new materials from scratch. This reduces pollution and helps protect nature.",
+            "The plant will also educate people about recycling. It might organize tours for schools and groups to show how waste can be turned into useful materials. This will help people understand why recycling is important."
+          ]
+        },
+        6: {
+          kicker: "Sports",
+          title: "FC Fenix Continues Playing in Minsk Leagues",
+          meta: "Local football club stays active in amateur competitions",
+          image: `<img class="overlay-img" src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1200&q=80" alt="Football Field" />`,
+          paragraphs: [
+            "FC Fenix is a football club in Minsk. It was founded in 2011, and it continues to play football in local leagues. The club has an interesting history and shows how local sports teams work in Belarus.",
+            "The club started as a team called AK Zhdanovichi. But in 2016, the team had money problems. It could not afford to play in professional leagues anymore. So it moved to amateur leagues instead.",
+            "In amateur leagues, teams do not get paid to play. Players play because they love football. They have regular jobs, but they practice and play games in their free time. This is common in Belarus.",
+            "The team changed its name to KovchegService for a while. But in 2019, it changed back to FC Fenix. The name Fenix comes from the phoenix bird, which rises from ashes. This name fits the team because it came back after difficult times.",
+            "FC Fenix plays in the Minsk Amateur League (ALF). This league has many teams from Minsk and nearby areas. Games are usually on weekends, and friends and family come to watch and cheer.",
+            "Playing in amateur leagues is still important. It gives people a chance to play sports, stay healthy, and have fun. It also helps build community spirit. People who live in the same area come together to support their local team.",
+            "The club practices regularly and tries to improve. Even though players are not professionals, they take the game seriously. They want to win games and have a good season.",
+            "Local football clubs like FC Fenix are important for cities. They give young people a place to play sports. They also give older people a way to stay active and social. Many people in Minsk support their local teams.",
+            "The club hopes to grow in the future. Maybe one day it will have enough money to move back to professional leagues. But for now, it is happy to play football and bring people together."
+          ]
+        },
+        7: {
+          kicker: "Urban",
+          title: "Yugo-Zapad District Develops with New Shops",
+          meta: "Dzerzhinsky Avenue becomes main street of the area",
+          image: `<img class="overlay-img" src="https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=1200&q=80" alt="City Street with Shops" />`,
+          paragraphs: [
+            "Yugo-Zapad is a district in the southwest part of Minsk. The name means 'Southwest' in Russian. This district has been growing and developing for many years. Now it is becoming a modern and comfortable place to live.",
+            "The main street in Yugo-Zapad is Dzerzhinsky Avenue. This avenue used to be called Soviet Border Guards Street. But in the 1980s, it was rebuilt and renamed. Now it is a wide, modern street with shops, cafes, and apartment buildings.",
+            "In the early 1980s, two big supermarkets opened in Yugo-Zapad. They were called Yugo-Zapad and Volgograd. These were important because they gave people a place to buy food and other things close to home. Before that, people had to travel far to shop.",
+            "Today, Dzerzhinsky Avenue has many shops and services. There are grocery stores, pharmacies, banks, and cafes. People can find almost everything they need without leaving the district. This makes life convenient for residents.",
+            "The district has good public transport. Buses and trolleybuses run along Dzerzhinsky Avenue regularly. This makes it easy to travel to the city center or other parts of Minsk. The transport is reliable and not too expensive.",
+            "Yugo-Zapad has schools and kindergartens for children. There are also parks and playgrounds where families can spend time together. The district is safe and clean, which makes it good for raising children.",
+            "In recent years, new apartment buildings have been built in Yugo-Zapad. These buildings are modern and have good facilities. They have elevators, good heating, and nice views. Many young families choose to live there.",
+            "The district continues to develop. City planners are improving roads, adding more green spaces, and building new facilities. The goal is to make Yugo-Zapad an even better place to live and work.",
+            "People who live in Yugo-Zapad say they like it there. It is not too far from the city center, but it is quieter and more peaceful. The district has everything they need, and the community is friendly."
+          ]
+        },
+        8: {
+          kicker: "Metro",
+          title: "Aerodromnaya Station Opens on Green Line",
+          meta: "Modern station with platform screen doors",
+          image: `<img class="overlay-img" src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?auto=format&fit=crop&w=1200&q=80" alt="Modern Metro Station" />`,
+          paragraphs: [
+            "Aerodromnaya is a new metro station in Minsk. It opened on December 30, 2024, as part of the Green Line extension. The station is special because it is built on the site of the old Minsk-1 airport.",
+            "The station has modern platform screen doors. These are glass walls between the platform and the train tracks. They open only when a train arrives. This keeps people safe and prevents accidents.",
+            "Platform screen doors have many benefits. They keep people from falling onto the tracks. They also keep the station cleaner because wind and trash cannot blow onto the platform. In winter, they help keep the station warmer.",
+            "The station is designed to be beautiful and functional. The walls have nice decorations, and the lighting is bright and clear. Signs help people find their way easily. Everything is accessible for people with disabilities.",
+            "Aerodromnaya station connects different parts of Minsk. People can travel from the city center to areas that were hard to reach before. This saves time and makes life easier for commuters.",
+            "The station is named after the old airport that used to be there. Minsk-1 airport was the main airport in Minsk for many years. But when a new, bigger airport was built, Minsk-1 closed. Now the land is being used for housing and transport.",
+            "Engineers worked hard to build the station safely. They dug deep underground and used strong materials. The station can handle many people at rush hour. It has escalators, elevators, and wide corridors.",
+            "The opening of Aerodromnaya station was a big event in Minsk. City leaders, engineers, and residents came to see it. Many people tried the new station on the first day and were happy with it.",
+            "This station is part of a larger plan to expand the Minsk metro. The city wants to build more stations in the coming years. This will make public transport even better and help reduce traffic on the roads."
+          ]
+        },
+        9: {
+          kicker: "Recreation",
+          title: "Drozdy Recreation Area Attracts Families",
+          meta: "Beaches, water park, and sports facilities near city center",
+          image: `<img class="overlay-img" src="https://images.unsplash.com/photo-1505142468610-359e7d316be0?auto=format&fit=crop&w=1200&q=80" alt="Recreation Area with Water" />`,
+          paragraphs: [
+            "Drozdy is a recreation area in Minsk. It is located in the northwest part of the city, near the Lebyazhy district. Many families go there on weekends and holidays to relax and have fun.",
+            "The area has a big water reservoir, which is like a small lake. In summer, people can swim in the water or sunbathe on the beach. The beach has sand and is clean and safe. Lifeguards watch over swimmers to keep everyone safe.",
+            "There is also a water park in Drozdy. A water park has pools, slides, and other water attractions. Children love going there because they can slide down big slides and play in the water. Adults also enjoy relaxing in the pools.",
+            "The recreation area has sports facilities. There are football fields, basketball courts, and tennis courts. People can rent equipment and play sports with friends or family. This helps people stay active and healthy.",
+            "Drozdy has cafes and restaurants where people can eat. There are also picnic areas where families can bring their own food and have a meal outdoors. Many people like to have barbecues there in summer.",
+            "The area is well-maintained and clean. Workers keep the beach clean, trim the grass, and make sure everything is safe. There are trash bins everywhere, so people can throw away their garbage properly.",
+            "Getting to Drozdy is easy. People can drive there by car, or they can take a bus or minibus. The area has parking spaces for cars. It is not too far from the city center, so it is convenient for many people.",
+            "In winter, Drozdy is also popular. When the reservoir freezes, people can ice skate on it. There are also hills nearby where children can sled. The area looks beautiful covered in snow.",
+            "The recreation area is important for Minsk. It gives people a place to relax and escape from city life. It helps families spend quality time together. It also helps people stay healthy through sports and outdoor activities.",
+            "City leaders want to keep improving Drozdy. They might add more facilities, improve the beach, or build more cafes. The goal is to make it an even better place for people to enjoy."
+          ]
+        }
+      };
+
+      // ===== ARTICLE OVERLAY LOGIC =====
+      const overlay = document.getElementById("article-overlay");
+      const sheet = document.getElementById("article-sheet");
+      const closeBtn = document.getElementById("article-close");
+      const articleKicker = document.getElementById("article-kicker");
+      const articleTitle = document.getElementById("article-title");
+      const articleMeta = document.getElementById("article-meta");
+      const articleImageContainer = document.getElementById("article-image-container");
+      const articleBody = document.getElementById("article-body");
+
+      function openArticle(id) {
+        const data = articleData[id];
+        if (!data) return;
+
+        articleKicker.textContent = data.kicker;
+        articleTitle.textContent = data.title;
+        articleMeta.textContent = data.meta;
+
+        // Show image if available
+        if (data.image) {
+          articleImageContainer.innerHTML = `<div class="w-full mb-4 border border-black/70" style="background: white; padding: 10px; border-radius: 4px;">${data.image}</div>`;
+        } else {
+          articleImageContainer.innerHTML = "";
+        }
+
+        articleBody.innerHTML = "";
+        data.paragraphs.forEach((p, index) => {
+          const para = document.createElement("p");
+          para.textContent = p;
+          para.className = index === 0 ? "mb-4 dropcap" : "mb-4";
+          articleBody.appendChild(para);
+        });
+
+        overlay.classList.add("active");
+        // trigger page turn
+        requestAnimationFrame(() => {
+          sheet.classList.add("turn");
+        });
+      }
+
+      function closeArticle() {
+        sheet.classList.remove("turn");
+        setTimeout(() => overlay.classList.remove("active"), 300);
+      }
+
+      document.querySelectorAll(".article-link").forEach(link => {
+        link.addEventListener("click", () => {
+          const id = link.dataset.article;
+          openArticle(id);
+        });
+      });
+
+      closeBtn.addEventListener("click", closeArticle);
+      overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) closeArticle();
+      });
+    </script>
+  </body>
+</html>
+
+
